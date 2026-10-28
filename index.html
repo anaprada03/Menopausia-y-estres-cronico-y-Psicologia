@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Red Conceptual: Perimenopausia y Estrés Crónico</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Vis.js Network (2D Physics Engine) -->
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            margin: 0;
+            background-color: #0b0f19;
+        }
+        #network-container {
+            width: 100vw;
+            height: calc(100vh - 65px);
+        }
+        /* Custom scrollbars */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(30, 41, 59, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(100, 116, 139, 0.5);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 h-screen w-screen flex flex-col antialiased">
+
+    <!-- TOP HEADER / TOOLBAR -->
+    <header class="h-[65px] bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between z-10 backdrop-blur-md">
+        <div class="flex items-center space-x-3">
+            <div class="p-2 bg-gradient-to-tr from-amber-500 to-orange-600 rounded-lg text-white shadow-lg shadow-orange-500/20">
+                <i class="fa-solid fa-diagram-project text-xl"></i>
+            </div>
+            <div>
+                <h1 class="text-base font-bold text-white leading-tight flex items-center gap-2">
+                    Biología Humana: Red Conceptual
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">Modo 2D Espaciado Amplio</span>
+                </h1>
+                <p class="text-xs text-slate-400">Perimenopausia, Menopausia, Estrés Crónico y Eje Hormonal</p>
+            </div>
+        </div>
+
+        <!-- FILTERS AND CONTROLS -->
+        <div class="flex items-center space-x-2 md:space-x-4">
+            <!-- Filter Dropdown -->
+            <div class="flex items-center bg-slate-900/90 border border-slate-700 rounded-lg px-3 py-1.5">
+                <i class="fa-solid fa-filter text-xs text-slate-400 mr-2"></i>
+                <select id="filter-category" class="bg-transparent text-xs text-slate-200 focus:outline-none cursor-pointer">
+                    <option value="ALL" class="bg-slate-800 text-white">Todos los conceptos</option>
+                    <option value="AFIN" class="bg-slate-800 text-amber-300">Tema Afín (Menopausia)</option>
+                    <option value="P1" class="bg-slate-800 text-emerald-300">1º Parcial (Verde)</option>
+                    <option value="P2" class="bg-slate-800 text-blue-300">2º Parcial (Azul)</option>
+                    <option value="SISTEMA" class="bg-slate-800 text-teal-300">Sistemas Obligatorios</option>
+                </select>
+            </div>
+
+            <!-- Integrated Paragraph Button -->
+            <button id="btn-tour" class="flex items-center space-x-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-medium text-xs px-3.5 py-2 rounded-lg shadow-md transition-all">
+                <i class="fa-solid fa-book-open text-xs"></i>
+                <span class="hidden sm:inline">Párrafo Integrador & Bibliografía</span>
+            </button>
+
+            <!-- Reset View Button -->
+            <button id="btn-reset" title="Restablecer Vista" class="p-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg border border-slate-700 transition-colors">
+                <i class="fa-solid fa-rotate-right text-xs"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <div class="relative flex-1 flex overflow-hidden">
+        
+        <!-- 2D GRAPH CONTAINER -->
+        <div id="network-container"></div>
+
+        <!-- FLOATING INSTRUCTIONS & LEGEND BOX -->
+        <div class="absolute bottom-4 left-4 bg-slate-900/90 border border-slate-800 backdrop-blur-md rounded-xl p-3.5 shadow-2xl max-w-xs text-xs space-y-2.5 z-10">
+            <div class="font-semibold text-slate-200 border-b border-slate-800 pb-1.5 flex items-center justify-between">
+                <span>Navegación 2D & Leyenda</span>
+                <i class="fa-solid fa-hand-pointer text-amber-400"></i>
+            </div>
+            
+            <!-- Controls Guide -->
+            <div class="bg-slate-950/60 p-2 rounded-lg border border-slate-800/80 space-y-1 text-[11px] text-slate-300">
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400"><i class="fa-solid fa-arrows-up-down-left-right mr-1"></i> Mover mapa:</span>
+                    <span>Clic izquierdo + Arrastrar</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400"><i class="fa-solid fa-magnifying-glass-plus mr-1"></i> Zoom:</span>
+                    <span>Rueda del mouse</span>
+                </div>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400"><i class="fa-solid fa-up-down-left-right mr-1"></i> Mover nodo:</span>
+                    <span>Arrastrar recuadro</span>
+                </div>
+            </div>
+
+            <!-- Legend Grid -->
+            <div class="grid grid-cols-2 gap-x-2 gap-y-1.5 pt-1">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-amber-500 inline-block shadow-sm shadow-amber-500/50"></span>
+                    <span class="text-slate-300">Tema Afín</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block shadow-sm shadow-emerald-500/50"></span>
+                    <span class="text-slate-300">1º Parcial</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-sky-500 inline-block shadow-sm shadow-sky-500/50"></span>
+                    <span class="text-slate-300">2º Parcial</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-teal-400 inline-block shadow-sm shadow-teal-400/50"></span>
+                    <span class="text-slate-300">Sistemas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DETAILS SIDE PANEL -->
+        <aside id="detail-panel" class="absolute top-0 right-0 h-full w-full sm:w-96 bg-slate-900/95 border-l border-slate-800 shadow-2xl z-20 flex flex-col transform translate-x-full transition-transform duration-300 backdrop-blur-lg">
+            <!-- Panel Header -->
+            <div class="p-4 border-b border-slate-800 flex items-center justify-between bg-slate-950/50">
+                <div class="flex items-center space-x-2">
+                    <span id="panel-tag" class="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                        Categoría
+                    </span>
+                </div>
+                <button id="btn-close-panel" class="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors">
+                    <i class="fa-solid fa-xmark text-base"></i>
+                </button>
+            </div>
+
+            <!-- Panel Content Body -->
+            <div class="p-5 flex-1 overflow-y-auto space-y-5">
+                <div>
+                    <h2 id="panel-title" class="text-xl font-bold text-white mb-1">Nombre del Concepto</h2>
+                    <p id="panel-subtitle" class="text-xs text-slate-400 font-mono">Rol biológico en la red</p>
+                </div>
+
+                <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2">
+                    <h3 class="text-xs font-semibold uppercase text-amber-400 tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-microscope"></i> Explicación Biológica Integrada
+                    </h3>
+                    <p id="panel-description" class="text-xs text-slate-300 leading-relaxed">
+                        Seleccione un nodo para ver la relación en detalle...
+                    </p>
+                </div>
+
+                <!-- Related Connections List -->
+                <div class="space-y-2">
+                    <h3 class="text-xs font-semibold uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                        <i class="fa-solid fa-network-wired"></i> Conexiones Directas
+                    </h3>
+                    <div id="panel-connections" class="space-y-1.5 text-xs">
+                        <!-- Dynamic content -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel Footer Navigation -->
+            <div class="p-3 border-t border-slate-800 bg-slate-950/40 flex justify-between items-center text-xs text-slate-400">
+                <span>Haz clic en el fondo para deseleccionar</span>
+                <i class="fa-solid fa-diagram-project text-slate-500"></i>
+            </div>
+        </aside>
+
+        <!-- INTEGRATED PARAGRAPH MODAL -->
+        <div id="tour-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4 hidden">
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+                <!-- Modal Header -->
+                <div class="p-5 border-b border-slate-800 flex justify-between items-center bg-slate-950/60">
+                    <div class="flex items-center space-x-3">
+                        <div class="p-2.5 bg-amber-500/20 border border-amber-500/40 text-amber-400 rounded-xl">
+                            <i class="fa-solid fa-file-lines text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold text-white">Párrafo Integrador y Bibliografía</h2>
+                            <p class="text-xs text-slate-400">Examen Parcial de Biología Humana</p>
+                        </div>
+                    </div>
+                    <button id="btn-close-modal" class="text-slate-400 hover:text-white p-2 rounded-lg hover:bg-slate-800">
+                        <i class="fa-solid fa-xmark text-lg"></i>
+                    </button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="p-6 overflow-y-auto space-y-6 text-slate-300 text-sm leading-relaxed">
+                    <!-- Párrafo Integrador -->
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-pen-nib"></i> Párrafo Integrador
+                        </h3>
+                        <p class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 italic text-slate-300 border-l-4 border-l-amber-500">
+                            "Elegí como tema afín la perimenopausia y menopausia y la crucé con el estrés crónico y el cortisol, porque ambos procesos comparten ejes del sistema endocrino y se influyen entre sí."
+                        </p>
+                        <p>
+                            Las mujeres nacen con una <strong>reserva limitada de folículos</strong>, originados en la ovogénesis (meiosis), que degeneran a lo largo de la vida. Al agotarse, los ovarios producen menos estradiol y progesterona; en la perimenopausia esa producción es irregular y se desordena la <strong>retroalimentación negativa</strong> del eje hipotálamo-hipófisis-ovarios (GnRH, FSH y LH).
+                        </p>
+                        <p>
+                            Estas hormonas derivan del <strong>colesterol (lípido/biomolécula)</strong>, atraviesan la membrana plasmática por ser liposolubles y se unen a un receptor intracelular que actúa sobre el ADN, activando la transcripción y la síntesis de proteínas.
+                        </p>
+                        <p>
+                            El cruce con el estrés se da en el hipotálamo: ante el <strong>estrés crónico</strong>, la cascada CRH, ACTH y corteza suprarrenal libera <strong>cortisol</strong>, que también deriva del colesterol y es el principal efector de la respuesta al estrés. Como el hipotálamo y la adenohipófisis son compartidos por el eje gonadal y el eje del estrés, el cortisol sostenido puede interferir con la GnRH, mientras que los síntomas de la perimenopausia (como los <strong>sofocos y el sueño fragmentado</strong>) pueden a su vez funcionar como fuente de estrés.
+                        </p>
+                        <p>
+                            El cortisol en exceso reduce la <strong>masa ósea</strong>, que ya se ve afectada por la caída de estrógenos, e inhibe el <strong>sistema inmunológico</strong>. Desde el tejido nervioso, la bibliografía asocia las fluctuaciones hormonales con sofocos, sueño alterado, cambios en la memoria y mayor riesgo de depresión y ansiedad, sobre todo con antecedentes depresivos; el cortisol sostenido y la epigenética pueden agravar esa vulnerabilidad. Para la psicopedagogía, comprender esta etapa permite evitar atribuir a lo "psicológico" lo que tiene base hormonal y acompañar con una mirada integral, biológica y psicosocial.
+                        </p>
+                    </div>
+
+                    <hr class="border-slate-800">
+
+                    <!-- Bibliografía consultada -->
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-book"></i> Bibliografía Consultada
+                        </h3>
+                        <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 space-y-2 text-xs">
+                            <p><strong>Material de cátedra (Dra. A. Marcial y equipo):</strong> Biología Humana: Biomoléculas; La célula como mínima unidad de vida; Síntesis de proteínas y nociones de genética; Tejidos animales; Sistemas del cuerpo humano; Sistemas reproductores, embriología y embarazo; Material endocrino (eje adrenal, cortisol y respuesta al estrés; eje gonadal; hipotálamo-hipófisis).</p>
+                            <p><strong>Bibliografía externa (usada solo para lo que los apuntes no tratan: perimenopausia, síntomas y estado de ánimo, sofocos):</strong></p>
+                            <ul class="list-disc pl-5 space-y-1 text-slate-400">
+                                <li>Soares, C. de N. y Cohen, L. S. (2001). The perimenopause, depressive disorders, and hormonal variability. <em>São Paulo Medical Journal</em>.</li>
+                                <li>Sun, Y. et al. (2022). Glutamatergic and GABAergic neurons in the preoptic area of the hypothalamus play key roles in menopausal hot flashes. <em>Frontiers in Aging Neuroscience</em>.</li>
+                                <li>University of Colorado Anschutz Medical Campus (2024). How does menopause affect the brain?</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Uso de Inteligencia Artificial -->
+                    <div class="space-y-3">
+                        <h3 class="text-xs font-bold uppercase tracking-wider text-amber-400 flex items-center gap-2">
+                            <i class="fa-solid fa-robot"></i> Uso de Inteligencia Artificial
+                        </h3>
+                        <p class="bg-slate-950/60 p-4 rounded-xl border border-slate-800 text-xs text-slate-300">
+                            Se utilizó IA como herramienta de apoyo para buscar las fuentes externas, organizar y diagramar la red conceptual a partir de los apuntes de la materia y revisar la redacción. Los contenidos se verificaron con los apuntes y con las fuentes citadas.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="p-4 border-t border-slate-800 bg-slate-950/60 flex justify-end space-x-3">
+                    <button id="btn-close-modal-2" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-lg text-xs font-semibold transition-colors">
+                        Cerrar Lectura
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // RAW DATA - ALL CONCEPTS INCLUDED FROM ORIGINAL PDF
+        const rawNodes = [
+            { id: 1, label: "MENOPAUSIA Y\nPERIMENOPAUSIA", category: "AFIN", color: "#f59e0b", detail: "Etapa de transición reproductiva caracterizada por el agotamiento progresivo de la reserva folicular ovárica e irregularidad en la secreción de estrógenos y progesterona." },
+            { id: 2, label: "Colesterol (Lípido)", category: "P1", color: "#10b981", detail: "Lípido esteroide precursor fundamental de todas las hormonas esteroideas, incluyendo estrógenos, progesterona y cortisol." },
+            { id: 3, label: "Biomoléculas", category: "P1", color: "#10b981", detail: "Moléculas orgánicas fundamentales (lípidos, proteínas, carbohidratos, ácidos nucleicos) que integran la estructura celular." },
+            { id: 4, label: "Membrana plasmática", category: "P1", color: "#10b981", detail: "Bicapa lipídica que las hormonas esteroideas liposolubles atraviesan libremente por difusión simple." },
+            { id: 5, label: "Receptor de estrógenos\n(proteína intracelular)", category: "P1", color: "#10b981", detail: "Receptor citoplasmático o nuclear al que se une el estradiol para viajar al núcleo y regular la expresión génica." },
+            { id: 6, label: "Núcleo / ADN", category: "P1", color: "#10b981", detail: "Depósito del material genético donde los complejos hormona-receptor inducen transcripción génica y síntesis proteica." },
+            { id: 7, label: "Epigenética\n(metilación del ADN)", category: "P1", color: "#10b981", detail: "Modificaciones ambientales y de estrés sobre el genoma sin alterar la secuencia de ADN que modulan la expresión de neuroreceptores." },
+            { id: 8, label: "Meiosis (ovogénesis)", category: "P1", color: "#10b981", detail: "División celular especializada reduccional que da origen a los ovocitos durante la etapa fetal." },
+            { id: 9, label: "Estrés crónico", category: "P2", color: "#0284c7", detail: "Activación sostenida del eje HPA en respuesta a estresores continuos, elevando sistemáticamente los niveles de glucocorticoides." },
+            { id: 10, label: "Cortisol", category: "P2", color: "#0284c7", detail: "Hormona glucocorticoide esteroidea producida en la corteza suprarrenal. Efector principal del estrés con efectos inmunosupresores y catabólicos." },
+            { id: 11, label: "Hipotálamo (GnRH)", category: "P2", color: "#0284c7", detail: "Centro regulador neuroendocrino que secreta pulsátilmente GnRH para controlar el eje gonadal y CRH para el eje adrenal." },
+            { id: 12, label: "Adenohipófisis\n(FSH, LH y ACTH)", category: "P2", color: "#0284c7", detail: "Lóbulo anterior hipofisario que sintetiza las gonadotropinas (FSH, LH) y la hormona adrenocorticotrópica (ACTH)." },
+            { id: 13, label: "Ovarios", category: "P2", color: "#0284c7", detail: "Gónadas femeninas responsables de la maduración folicular y de la síntesis de estrógenos y progesterona." },
+            { id: 14, label: "Folículos ováricos\n(reserva limitada)", category: "P2", color: "#0284c7", detail: "Unidades funcionales ováricas cuya cantidad es finita desde el nacimiento y decrece progresivamente hasta agotarse en la menopausia." },
+            { id: 15, label: "Estradiol y\nprogesterona", category: "P2", color: "#0284c7", detail: "Hormonas sexuales esteroideas principales que regulan el ciclo femenino, la salud ósea, vascular y el tono del sistema nervioso." },
+            { id: 16, label: "Estrógenos y FSH\nfluctuantes", category: "P2", color: "#0284c7", detail: "Patrón hormonal errático característico de la perimenopausia debido a la pérdida del control por retroalimentación negativa." },
+            { id: 17, label: "Retroalimentación\nnegativa", category: "P2", color: "#0284c7", detail: "Mecanismo homeostático de autorregulación donde los niveles circulantes de hormonas periféricas frenan la liberación hipotalámica/hipofisaria." },
+            { id: 18, label: "Ciclo sexual\nfemenino", category: "P2", color: "#0284c7", detail: "Secuencia mensual coordinada por los ejes hormonales para la maduración del ovocito y preparación endometrial." },
+            { id: 19, label: "Corteza\nsuprarrenal", category: "P2", color: "#0284c7", detail: "Capa externa de la glándula suprarrenal estimulada por la ACTH para la síntesis de cortisol." },
+            { id: 20, label: "Tejido óseo", category: "P2", color: "#0284c7", detail: "Estructura mineralizada que sufre pérdida de masa (osteopenia/osteoporosis) ante el déficit de estrógenos y exceso de cortisol." },
+            { id: 21, label: "Tejido nervioso", category: "P2", color: "#0284c7", detail: "Sistema blanco de neuromodulación estrogénica y objetivo de los efectos neurotóxicos/sensibilizadores del estrés." },
+            { id: 22, label: "Hipocampo (memoria)", category: "P2", color: "#0284c7", detail: "Estructura límbica clave en consolidación de memoria y regulación emocional, vulnerable a la atrofia por hipercortisolemia." },
+            { id: 23, label: "Sofocos", category: "P2", color: "#e11d48", detail: "Síntoma vasomotor desencadenado por la disfunción termorreguladora hipotalámica asociada a fluctuaciones estrogénicas." },
+            { id: 24, label: "Sueño alterado", category: "P2", color: "#3b82f6", detail: "Arquitectura del descanso afectada por despertares nocturnos por sofocos y desregulación del ciclo circadiano." },
+            { id: 25, label: "Melatonina\n(glándula pineal)", category: "P2", color: "#3b82f6", detail: "Hormona circadiana sintetizada a partir de serotonina que modula el ritmo sueño-vigilia." },
+            { id: 26, label: "Serotonina", category: "P2", color: "#3b82f6", detail: "Neurotransmisor clave en el estado de ánimo y termorregulación, sensible a los niveles de estrógenos." },
+            { id: 27, label: "Triptófano\n(aminoácido)", category: "P1", color: "#10b981", detail: "Aminoácido esencial precursor bioquímico de la serotonina y melatonina." },
+            { id: 28, label: "Estado de ánimo:\ndepresión y ansiedad", category: "P2", color: "#8b5cf6", detail: "Alteraciones psicoafectivas favorecidas por la vulnerabilidad neurobiológica ante la caída de estrógenos y cortisol elevado." },
+            { id: 29, label: "Antecedentes de\ndepresión", category: "P2", color: "#facc15", detail: "Factor de riesgo previo que incrementa exponencialmente la probabilidad de presentar episodios depresivos en perimenopausia." },
+            { id: 30, label: "SISTEMA ENDOCRINO", category: "SISTEMA", color: "#2dd4bf", detail: "Sistema de comunicación química corporal mediante hormonas que incluye a los ejes gonadal, adrenal y tiroideo." },
+            { id: 31, label: "SISTEMA INMUNOLÓGICO", category: "SISTEMA", color: "#2dd4bf", detail: "Sistema de defensa biológica inhibido directamente por la acción prolongada del cortisol." },
+            { id: 32, label: "SISTEMAS\nREPRODUCTORES", category: "SISTEMA", color: "#2dd4bf", detail: "Conjunto de órganos gónado-genitales encargados de la fertilidad y reproducción." }
+        ];
+
+        const rawEdges = [
+            { from: 3, to: 2, label: "contiene" },
+            { from: 2, to: 15, label: "precursor de" },
+            { from: 2, to: 10, label: "precursor de" },
+            { from: 15, to: 4, label: "atraviesa" },
+            { from: 4, to: 5, label: "se une a" },
+            { from: 5, to: 6, label: "actúa sobre ADN" },
+            { from: 6, to: 5, label: "síntesis proteica" },
+            { from: 7, to: 5, label: "modula expresión" },
+            { from: 7, to: 9, label: "influido por" },
+            { from: 8, to: 14, label: "origina" },
+            { from: 14, to: 1, label: "reserva se agota" },
+            { from: 1, to: 18, label: "altera" },
+            { from: 1, to: 13, label: "afecta gónada" },
+            { from: 13, to: 15, label: "produce menor" },
+            { from: 15, to: 17, label: "desordena" },
+            { from: 17, to: 12, label: "libera freno" },
+            { from: 12, to: 16, label: "genera niveles" },
+            { from: 9, to: 11, label: "activa cascada" },
+            { from: 11, to: 12, label: "estimula CRH/ACTH" },
+            { from: 12, to: 19, label: "ACTH estimula" },
+            { from: 19, to: 10, label: "libera" },
+            { from: 10, to: 11, label: "interfiere GnRH" },
+            { from: 10, to: 20, label: "reduce masa" },
+            { from: 10, to: 31, label: "inhibe respuesta" },
+            { from: 15, to: 20, label: "mantiene densidad" },
+            { from: 16, to: 23, label: "desencadena" },
+            { from: 23, to: 24, label: "altera descanso" },
+            { from: 24, to: 9, label: "fuente de estrés" },
+            { from: 27, to: 26, label: "precursor" },
+            { from: 26, to: 25, label: "transforma en" },
+            { from: 25, to: 24, label: "regula ciclo" },
+            { from: 26, to: 28, label: "regula" },
+            { from: 16, to: 28, label: "fluctuaciones provocan" },
+            { from: 29, to: 28, label: "mayor riesgo" },
+            { from: 21, to: 22, label: "comprende" },
+            { from: 16, to: 22, label: "afecta memoria" },
+            { from: 10, to: 22, label: "vulnerabilidad neuro" },
+            { from: 30, to: 11, label: "integra" },
+            { from: 30, to: 25, label: "glándula pineal" },
+            { from: 32, to: 13, label: "comprende" },
+            { from: 21, to: 28, label: "procesa" }
+        ];
+
+        // Format nodes for Vis.js with generous spacing/sizing
+        const nodesDataSet = new vis.DataSet(
+            rawNodes.map(n => ({
+                id: n.id,
+                label: n.label,
+                category: n.category,
+                detail: n.detail,
+                shape: 'box',
+                margin: 12,
+                color: {
+                    background: '#0f172a',
+                    border: n.color,
+                    highlight: { background: '#1e293b', border: '#f59e0b' },
+                    hover: { background: '#1e293b', border: n.color }
+                },
+                font: { color: '#ffffff', face: 'Inter', size: 12, bold: true },
+                borderWidth: 2,
+                borderWidthSelected: 3,
+                shadow: { enabled: true, color: 'rgba(0,0,0,0.5)', size: 8 }
+            }))
+        );
+
+        const edgesDataSet = new vis.DataSet(
+            rawEdges.map((e, idx) => ({
+                id: idx,
+                from: e.from,
+                to: e.to,
+                label: e.label,
+                font: { color: '#94a3b8', size: 10, align: 'middle', background: '#0b0f19' },
+                arrows: { to: { enabled: true, scaleFactor: 0.7 } },
+                color: { color: '#334155', highlight: '#f59e0b', hover: '#64748b' },
+                smooth: { type: 'cubicBezier', roundness: 0.4 }
+            }))
+        );
+
+        // INITIALIZE VIS.JS NETWORK WITH WIDE SPACING PHYSICS
+        const container = document.getElementById('network-container');
+        const data = { nodes: nodesDataSet, edges: edgesDataSet };
+        
+        const options = {
+            nodes: {
+                borderWidth: 2,
+                shadow: true
+            },
+            edges: {
+                width: 1.5,
+                shadow: false
+            },
+            physics: {
+                enabled: true,
+                solver: 'forceAtlas2Based',
+                forceAtlas2Based: {
+                    gravitationalConstant: -220, // Increased repulsion to keep nodes wide apart
+                    centralGravity: 0.005,
+                    springLength: 180,           // Longer distance between connected nodes
+                    springConstant: 0.03,
+                    damping: 0.4
+                },
+                maxVelocity: 50,
+                minVelocity: 0.75,
+                stabilization: {
+                    enabled: true,
+                    iterations: 1000,
+                    updateInterval: 25
+                }
+            },
+            interaction: {
+                hover: true,
+                tooltipDelay: 200,
+                zoomView: true,
+                dragView: true,
+                dragNodes: true
+            }
+        };
+
+        const network = new vis.Network(container, data, options);
+
+        // SIDE PANEL INTERACTION
+        const detailPanel = document.getElementById('detail-panel');
+        const panelTitle = document.getElementById('panel-title');
+        const panelSubtitle = document.getElementById('panel-subtitle');
+        const panelTag = document.getElementById('panel-tag');
+        const panelDescription = document.getElementById('panel-description');
+        const panelConnections = document.getElementById('panel-connections');
+
+        function openPanel(nodeId) {
+            const node = rawNodes.find(n => n.id === nodeId);
+            if (!node) return;
+
+            panelTitle.innerText = node.label.replace('\n', ' ');
+            panelSubtitle.innerText = `ID Nodo: #${node.id} • Categoría: ${node.category}`;
+            panelDescription.innerText = node.detail || "Sin descripción disponible.";
+
+            // Category tag style
+            let catText = "Contenido";
+            let catClass = "bg-slate-700 text-slate-200 border-slate-600";
+            if (node.category === "AFIN") { catText = "Tema Afín (Núcleo)"; catClass = "bg-amber-500/20 text-amber-300 border-amber-500/30"; }
+            else if (node.category === "P1") { catText = "1º Parcial (Bases)"; catClass = "bg-emerald-500/20 text-emerald-300 border-emerald-500/30"; }
+            else if (node.category === "P2") { catText = "2º Parcial (Fisiología)"; catClass = "bg-sky-500/20 text-sky-300 border-sky-500/30"; }
+            else if (node.category === "SISTEMA") { catText = "Sistema Obligatorio"; catClass = "bg-teal-500/20 text-teal-300 border-teal-500/30"; }
+            
+            panelTag.innerText = catText;
+            panelTag.className = `text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${catClass}`;
+
+            // Connections
+            panelConnections.innerHTML = "";
+            const connectedEdges = rawEdges.filter(e => e.from === node.id || e.to === node.id);
+            
+            connectedEdges.forEach(edge => {
+                const targetId = (edge.from === node.id) ? edge.to : edge.from;
+                const connNode = rawNodes.find(n => n.id === targetId);
+                
+                const item = document.createElement("div");
+                item.className = "p-2 bg-slate-950/50 rounded border border-slate-800 flex justify-between items-center hover:bg-slate-800/50 cursor-pointer transition-colors";
+                item.innerHTML = `
+                    <div>
+                        <div class="font-medium text-slate-200">${connNode.label.replace('\n', ' ')}</div>
+                        <div class="text-[10px] text-amber-400/80">${edge.label}</div>
+                    </div>
+                    <i class="fa-solid fa-chevron-right text-[10px] text-slate-500"></i>
+                `;
+                item.onclick = (e) => {
+                    e.stopPropagation();
+                    network.focus(connNode.id, { scale: 1.2, animation: { duration: 800, easingFunction: 'easeInOutQuad' } });
+                    network.selectNodes([connNode.id]);
+                    openPanel(connNode.id);
+                };
+                panelConnections.appendChild(item);
+            });
+
+            detailPanel.classList.remove('translate-x-full');
+        }
+
+        function closePanel() {
+            detailPanel.classList.add('translate-x-full');
+        }
+
+        network.on("click", function (params) {
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                openPanel(nodeId);
+            } else {
+                closePanel();
+            }
+        });
+
+        document.getElementById('btn-close-panel').addEventListener('click', closePanel);
+
+        // FILTER CATEGORIES
+        document.getElementById('filter-category').addEventListener('change', function(e) {
+            const val = e.target.value;
+            if (val === "ALL") {
+                nodesDataSet.clear();
+                nodesDataSet.add(rawNodes.map(n => ({
+                    id: n.id,
+                    label: n.label,
+                    category: n.category,
+                    detail: n.detail,
+                    shape: 'box',
+                    margin: 12,
+                    color: { background: '#0f172a', border: n.color },
+                    font: { color: '#ffffff', face: 'Inter', size: 12, bold: true },
+                    borderWidth: 2
+                })));
+            } else {
+                const filtered = rawNodes.filter(n => n.category === val || n.category === "AFIN");
+                nodesDataSet.clear();
+                nodesDataSet.add(filtered.map(n => ({
+                    id: n.id,
+                    label: n.label,
+                    category: n.category,
+                    detail: n.detail,
+                    shape: 'box',
+                    margin: 12,
+                    color: { background: '#0f172a', border: n.color },
+                    font: { color: '#ffffff', face: 'Inter', size: 12, bold: true },
+                    borderWidth: 2
+                })));
+            }
+            network.fit({ animation: { duration: 800 } });
+        });
+
+        // RESET VIEW
+        document.getElementById('btn-reset').addEventListener('click', function() {
+            closePanel();
+            document.getElementById('filter-category').value = "ALL";
+            network.fit({ animation: { duration: 800 } });
+        });
+
+        // INTEGRATED PARAGRAPH MODAL
+        const tourModal = document.getElementById('tour-modal');
+        document.getElementById('btn-tour').addEventListener('click', () => tourModal.classList.remove('hidden'));
+        document.getElementById('btn-close-modal').addEventListener('click', () => tourModal.classList.add('hidden'));
+        document.getElementById('btn-close-modal-2').addEventListener('click', () => tourModal.classList.add('hidden'));
+    </script>
+</body>
+</html>
