@@ -48,12 +48,12 @@
     <header class="h-[65px] bg-slate-900/90 border-b border-slate-800 px-4 flex items-center justify-between z-10 backdrop-blur-md">
         <div class="flex items-center space-x-3">
             <div class="p-2 bg-gradient-to-tr from-amber-500 to-orange-600 rounded-lg text-white shadow-lg shadow-orange-500/20">
-                <i class="fa-solid fa-diagram-project text-xl"></i>
+                <i class="fa-solid fa-brain text-xl"></i>
             </div>
             <div>
                 <h1 class="text-base font-bold text-white leading-tight flex items-center gap-2">
-                    Biología Humana: Red Conceptual
-                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">Modo 2D Espaciado Amplio</span>
+                    Biología Humana: Red Biológica Celular / Cerebral
+                    <span class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 rounded-full font-mono">Modo Orgánico</span>
                 </h1>
                 <p class="text-xs text-slate-400">Perimenopausia, Menopausia, Estrés Crónico y Eje Hormonal</p>
             </div>
@@ -95,8 +95,8 @@
         <!-- FLOATING INSTRUCTIONS & LEGEND BOX -->
         <div class="absolute bottom-4 left-4 bg-slate-900/90 border border-slate-800 backdrop-blur-md rounded-xl p-3.5 shadow-2xl max-w-xs text-xs space-y-2.5 z-10">
             <div class="font-semibold text-slate-200 border-b border-slate-800 pb-1.5 flex items-center justify-between">
-                <span>Navegación 2D & Leyenda</span>
-                <i class="fa-solid fa-hand-pointer text-amber-400"></i>
+                <span>Estructura Orgánica & Leyenda</span>
+                <i class="fa-solid fa-dna text-amber-400"></i>
             </div>
             
             <!-- Controls Guide -->
@@ -269,40 +269,40 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // RAW DATA - ALL CONCEPTS INCLUDED FROM ORIGINAL PDF
+        // RAW DATA - ALL CONCEPTS INCLUDED WITH ORGANIC/CELLULAR COORDINATES
         const rawNodes = [
-            { id: 1, label: "MENOPAUSIA Y\nPERIMENOPAUSIA", category: "AFIN", color: "#f59e0b", detail: "Etapa de transición reproductiva caracterizada por el agotamiento progresivo de la reserva folicular ovárica e irregularidad en la secreción de estrógenos y progesterona." },
-            { id: 2, label: "Colesterol (Lípido)", category: "P1", color: "#10b981", detail: "Lípido esteroide precursor fundamental de todas las hormonas esteroideas, incluyendo estrógenos, progesterona y cortisol." },
-            { id: 3, label: "Biomoléculas", category: "P1", color: "#10b981", detail: "Moléculas orgánicas fundamentales (lípidos, proteínas, carbohidratos, ácidos nucleicos) que integran la estructura celular." },
-            { id: 4, label: "Membrana plasmática", category: "P1", color: "#10b981", detail: "Bicapa lipídica que las hormonas esteroideas liposolubles atraviesan libremente por difusión simple." },
-            { id: 5, label: "Receptor de estrógenos\n(proteína intracelular)", category: "P1", color: "#10b981", detail: "Receptor citoplasmático o nuclear al que se une el estradiol para viajar al núcleo y regular la expresión génica." },
-            { id: 6, label: "Núcleo / ADN", category: "P1", color: "#10b981", detail: "Depósito del material genético donde los complejos hormona-receptor inducen transcripción génica y síntesis proteica." },
-            { id: 7, label: "Epigenética\n(metilación del ADN)", category: "P1", color: "#10b981", detail: "Modificaciones ambientales y de estrés sobre el genoma sin alterar la secuencia de ADN que modulan la expresión de neuroreceptores." },
-            { id: 8, label: "Meiosis (ovogénesis)", category: "P1", color: "#10b981", detail: "División celular especializada reduccional que da origen a los ovocitos durante la etapa fetal." },
-            { id: 9, label: "Estrés crónico", category: "P2", color: "#0284c7", detail: "Activación sostenida del eje HPA en respuesta a estresores continuos, elevando sistemáticamente los niveles de glucocorticoides." },
-            { id: 10, label: "Cortisol", category: "P2", color: "#0284c7", detail: "Hormona glucocorticoide esteroidea producida en la corteza suprarrenal. Efector principal del estrés con efectos inmunosupresores y catabólicos." },
-            { id: 11, label: "Hipotálamo (GnRH)", category: "P2", color: "#0284c7", detail: "Centro regulador neuroendocrino que secreta pulsátilmente GnRH para controlar el eje gonadal y CRH para el eje adrenal." },
-            { id: 12, label: "Adenohipófisis\n(FSH, LH y ACTH)", category: "P2", color: "#0284c7", detail: "Lóbulo anterior hipofisario que sintetiza las gonadotropinas (FSH, LH) y la hormona adrenocorticotrópica (ACTH)." },
-            { id: 13, label: "Ovarios", category: "P2", color: "#0284c7", detail: "Gónadas femeninas responsables de la maduración folicular y de la síntesis de estrógenos y progesterona." },
-            { id: 14, label: "Folículos ováricos\n(reserva limitada)", category: "P2", color: "#0284c7", detail: "Unidades funcionales ováricas cuya cantidad es finita desde el nacimiento y decrece progresivamente hasta agotarse en la menopausia." },
-            { id: 15, label: "Estradiol y\nprogesterona", category: "P2", color: "#0284c7", detail: "Hormonas sexuales esteroideas principales que regulan el ciclo femenino, la salud ósea, vascular y el tono del sistema nervioso." },
-            { id: 16, label: "Estrógenos y FSH\nfluctuantes", category: "P2", color: "#0284c7", detail: "Patrón hormonal errático característico de la perimenopausia debido a la pérdida del control por retroalimentación negativa." },
-            { id: 17, label: "Retroalimentación\nnegativa", category: "P2", color: "#0284c7", detail: "Mecanismo homeostático de autorregulación donde los niveles circulantes de hormonas periféricas frenan la liberación hipotalámica/hipofisaria." },
-            { id: 18, label: "Ciclo sexual\nfemenino", category: "P2", color: "#0284c7", detail: "Secuencia mensual coordinada por los ejes hormonales para la maduración del ovocito y preparación endometrial." },
-            { id: 19, label: "Corteza\nsuprarrenal", category: "P2", color: "#0284c7", detail: "Capa externa de la glándula suprarrenal estimulada por la ACTH para la síntesis de cortisol." },
-            { id: 20, label: "Tejido óseo", category: "P2", color: "#0284c7", detail: "Estructura mineralizada que sufre pérdida de masa (osteopenia/osteoporosis) ante el déficit de estrógenos y exceso de cortisol." },
-            { id: 21, label: "Tejido nervioso", category: "P2", color: "#0284c7", detail: "Sistema blanco de neuromodulación estrogénica y objetivo de los efectos neurotóxicos/sensibilizadores del estrés." },
-            { id: 22, label: "Hipocampo (memoria)", category: "P2", color: "#0284c7", detail: "Estructura límbica clave en consolidación de memoria y regulación emocional, vulnerable a la atrofia por hipercortisolemia." },
-            { id: 23, label: "Sofocos", category: "P2", color: "#e11d48", detail: "Síntoma vasomotor desencadenado por la disfunción termorreguladora hipotalámica asociada a fluctuaciones estrogénicas." },
-            { id: 24, label: "Sueño alterado", category: "P2", color: "#3b82f6", detail: "Arquitectura del descanso afectada por despertares nocturnos por sofocos y desregulación del ciclo circadiano." },
-            { id: 25, label: "Melatonina\n(glándula pineal)", category: "P2", color: "#3b82f6", detail: "Hormona circadiana sintetizada a partir de serotonina que modula el ritmo sueño-vigilia." },
-            { id: 26, label: "Serotonina", category: "P2", color: "#3b82f6", detail: "Neurotransmisor clave en el estado de ánimo y termorregulación, sensible a los niveles de estrógenos." },
-            { id: 27, label: "Triptófano\n(aminoácido)", category: "P1", color: "#10b981", detail: "Aminoácido esencial precursor bioquímico de la serotonina y melatonina." },
-            { id: 28, label: "Estado de ánimo:\ndepresión y ansiedad", category: "P2", color: "#8b5cf6", detail: "Alteraciones psicoafectivas favorecidas por la vulnerabilidad neurobiológica ante la caída de estrógenos y cortisol elevado." },
-            { id: 29, label: "Antecedentes de\ndepresión", category: "P2", color: "#facc15", detail: "Factor de riesgo previo que incrementa exponencialmente la probabilidad de presentar episodios depresivos en perimenopausia." },
-            { id: 30, label: "SISTEMA ENDOCRINO", category: "SISTEMA", color: "#2dd4bf", detail: "Sistema de comunicación química corporal mediante hormonas que incluye a los ejes gonadal, adrenal y tiroideo." },
-            { id: 31, label: "SISTEMA INMUNOLÓGICO", category: "SISTEMA", color: "#2dd4bf", detail: "Sistema de defensa biológica inhibido directamente por la acción prolongada del cortisol." },
-            { id: 32, label: "SISTEMAS\nREPRODUCTORES", category: "SISTEMA", color: "#2dd4bf", detail: "Conjunto de órganos gónado-genitales encargados de la fertilidad y reproducción." }
+            { id: 1, label: "MENOPAUSIA Y\nPERIMENOPAUSIA", category: "AFIN", color: "#f59e0b", x: 0, y: 0, detail: "Etapa de transición reproductiva caracterizada por el agotamiento progresivo de la reserva folicular ovárica e irregularidad en la secreción de estrógenos y progesterona." },
+            { id: 2, label: "Colesterol (Lípido)", category: "P1", color: "#10b981", x: 450, y: 150, detail: "Lípido esteroide precursor fundamental de todas las hormonas esteroideas, incluyendo estrógenos, progesterona y cortisol." },
+            { id: 3, label: "Biomoléculas", category: "P1", color: "#10b981", x: 650, y: 150, detail: "Moléculas orgánicas fundamentales (lípidos, proteínas, carbohidratos, ácidos nucleicos) que integran la estructura celular." },
+            { id: 4, label: "Membrana plasmática", category: "P1", color: "#10b981", x: 450, y: 20, detail: "Bicapa lipídica que las hormonas esteroideas liposolubles atraviesan libremente por difusión simple." },
+            { id: 5, label: "Receptor de estrógenos\n(proteína intracelular)", category: "P1", color: "#10b981", x: 650, y: -80, detail: "Receptor citoplasmático o nuclear al que se une el estradiol para viajar al núcleo y regular la expresión génica." },
+            { id: 6, label: "Núcleo / ADN", category: "P1", color: "#10b981", x: 880, y: -80, detail: "Depósito del material genético donde los complejos hormona-receptor inducen transcripción génica y síntesis proteica." },
+            { id: 7, label: "Epigenética\n(metilación del ADN)", category: "P1", color: "#10b981", x: 450, y: -120, detail: "Modificaciones ambientales y de estrés sobre el genoma sin alterar la secuencia de ADN que modulan la expresión de neuroreceptores." },
+            { id: 8, label: "Meiosis (ovogénesis)", category: "P1", color: "#10b981", x: 300, y: 280, detail: "División celular especializada reduccional que da origen a los ovocitos durante la etapa fetal." },
+            { id: 9, label: "Estrés crónico", category: "P2", color: "#0284c7", x: 150, y: -220, detail: "Activación sostenida del eje HPA en respuesta a estresores continuos, elevando sistemáticamente los niveles de glucocorticoides." },
+            { id: 10, label: "Cortisol", category: "P2", color: "#0284c7", x: 220, y: 50, detail: "Hormona glucocorticoide esteroidea producida en la corteza suprarrenal. Efector principal del estrés con efectos inmunosupresores y catabólicos." },
+            { id: 11, label: "Hipotálamo (GnRH)", category: "P2", color: "#0284c7", x: -80, y: -180, detail: "Centro regulador neuroendocrino que secreta pulsátilmente GnRH para controlar el eje gonadal y CRH para el eje adrenal." },
+            { id: 12, label: "Adenohipófisis\n(FSH, LH y ACTH)", category: "P2", color: "#0284c7", x: -120, y: -80, detail: "Lóbulo anterior hipofisario que sintetiza las gonadotropinas (FSH, LH) y la hormona adrenocorticotrópica (ACTH)." },
+            { id: 13, label: "Ovarios", category: "P2", color: "#0284c7", x: -150, y: 220, detail: "Gónadas femeninas responsables de la maduración folicular y de la síntesis de estrógenos y progesterona." },
+            { id: 14, label: "Folículos ováricos\n(reserva limitada)", category: "P2", color: "#0284c7", x: 80, y: 220, detail: "Unidades funcionales ováricas cuya cantidad es finita desde el nacimiento y decrece progresivamente hasta agotarse en la menopausia." },
+            { id: 15, label: "Estradiol y\nprogesterona", category: "P2", color: "#0284c7", x: 220, y: 150, detail: "Hormonas sexuales esteroideas principales que regulan el ciclo femenino, la salud ósea, vascular y el tono del sistema nervioso." },
+            { id: 16, label: "Estrógenos y FSH\nfluctuantes", category: "P2", color: "#0284c7", x: -180, y: 30, detail: "Patrón hormonal errático característico de la perimenopausia debido a la pérdida del control por retroalimentación negativa." },
+            { id: 17, label: "Retroalimentación\nnegativa", category: "P2", color: "#0284c7", x: 120, y: -120, detail: "Mecanismo homeostático de autorregulación donde los niveles circulantes de hormonas periféricas frenan la liberación hipotalámica/hipofisaria." },
+            { id: 18, label: "Ciclo sexual\nfemenino", category: "P2", color: "#0284c7", x: -300, y: 220, detail: "Secuencia mensual coordinada por los ejes hormonales para la maduración del ovocito y preparación endometrial." },
+            { id: 19, label: "Corteza\nsuprarrenal", category: "P2", color: "#0284c7", x: -50, y: 80, detail: "Capa externa de la glándula suprarrenal estimulada por la ACTH para la síntesis de cortisol." },
+            { id: 20, label: "Tejido óseo", category: "P2", color: "#0284c7", x: 380, y: 260, detail: "Estructura mineralizada que sufre pérdida de masa (osteopenia/osteoporosis) ante el déficit de estrógenos y exceso de cortisol." },
+            { id: 21, label: "Tejido nervioso", category: "P2", color: "#0284c7", x: -380, y: -100, detail: "Sistema blanco de neuromodulación estrogénica y objetivo de los efectos neurotóxicos/sensibilizadores del estrés." },
+            { id: 22, label: "Hipocampo (memoria)", category: "P2", color: "#0284c7", x: -580, y: -160, detail: "Estructura límbica clave en consolidación de memoria y regulación emocional, vulnerable a la atrofia por hipercortisolemia." },
+            { id: 23, label: "Sofocos", category: "P2", color: "#e11d48", x: -320, y: 80, detail: "Síntoma vasomotor desencadenado por la disfunción termorreguladora hipotalámica asociada a fluctuaciones estrogénicas." },
+            { id: 24, label: "Sueño alterado", category: "P2", color: "#3b82f6", x: -550, y: 20, detail: "Arquitectura del descanso afectada por despertares nocturnos por sofocos y desregulación del ciclo circadiano." },
+            { id: 25, label: "Melatonina\n(glándula pineal)", category: "P2", color: "#3b82f6", x: -750, y: 80, detail: "Hormona circadiana sintetizada a partir de serotonina que modula el ritmo sueño-vigilia." },
+            { id: 26, label: "Serotonina", category: "P2", color: "#3b82f6", x: -700, y: -20, detail: "Neurotransmisor clave en el estado de ánimo y termorregulación, sensible a los niveles de estrógenos." },
+            { id: 27, label: "Triptófano\n(aminoácido)", category: "P1", color: "#10b981", x: -880, y: -80, detail: "Aminoácido esencial precursor bioquímico de la serotonina y melatonina." },
+            { id: 28, label: "Estado de ánimo:\ndepresión y ansiedad", category: "P2", color: "#8b5cf6", x: -520, y: -80, detail: "Alteraciones psicoafectivas favorecidas por la vulnerabilidad neurobiológica ante la caída de estrógenos y cortisol elevado." },
+            { id: 29, label: "Antecedentes de\ndepresión", category: "P2", color: "#facc15", x: -720, y: -200, detail: "Factor de riesgo previo que incrementa exponencialmente la probabilidad de presentar episodios depresivos en perimenopausia." },
+            { id: 30, label: "SISTEMA ENDOCRINO", category: "SISTEMA", color: "#2dd4bf", x: -280, y: -260, detail: "Sistema de comunicación química corporal mediante hormonas que incluye a los ejes gonadal, adrenal y tiroideo." },
+            { id: 31, label: "SISTEMA INMUNOLÓGICO", category: "SISTEMA", color: "#2dd4bf", x: 180, y: -120, detail: "Sistema de defensa biológica inhibido directamente por la acción prolongada del cortisol." },
+            { id: 32, label: "SISTEMAS\nREPRODUCTORES", category: "SISTEMA", color: "#2dd4bf", x: -180, y: 350, detail: "Conjunto de órganos gónado-genitales encargados de la fertilidad y reproducción." }
         ];
 
         const rawEdges = [
@@ -349,13 +349,15 @@
             { from: 21, to: 28, label: "procesa" }
         ];
 
-        // Format nodes for Vis.js with generous spacing/sizing
+        // Format nodes for Vis.js with fixed organic coordinates (brain/cell distribution)
         const nodesDataSet = new vis.DataSet(
             rawNodes.map(n => ({
                 id: n.id,
                 label: n.label,
                 category: n.category,
                 detail: n.detail,
+                x: n.x,
+                y: n.y,
                 shape: 'box',
                 margin: 12,
                 color: {
@@ -384,7 +386,7 @@
             }))
         );
 
-        // INITIALIZE VIS.JS NETWORK WITH WIDE SPACING PHYSICS
+        // INITIALIZE VIS.JS NETWORK WITH SEMI-FIXED ORGANIC LAYOUT
         const container = document.getElementById('network-container');
         const data = { nodes: nodesDataSet, edges: edgesDataSet };
         
@@ -398,21 +400,18 @@
                 shadow: false
             },
             physics: {
-                enabled: true,
-                solver: 'forceAtlas2Based',
-                forceAtlas2Based: {
-                    gravitationalConstant: -220, // Increased repulsion to keep nodes wide apart
-                    centralGravity: 0.005,
-                    springLength: 180,           // Longer distance between connected nodes
-                    springConstant: 0.03,
-                    damping: 0.4
+                enabled: true, // Gentle organic adjustment without ruining the shape
+                solver: 'repulsion',
+                repulsion: {
+                    nodeDistance: 120,
+                    centralGravity: 0.1,
+                    springLength: 150,
+                    springConstant: 0.02,
+                    damping: 0.09
                 },
-                maxVelocity: 50,
-                minVelocity: 0.75,
                 stabilization: {
                     enabled: true,
-                    iterations: 1000,
-                    updateInterval: 25
+                    iterations: 100
                 }
             },
             interaction: {
@@ -442,7 +441,6 @@
             panelSubtitle.innerText = `ID Nodo: #${node.id} • Categoría: ${node.category}`;
             panelDescription.innerText = node.detail || "Sin descripción disponible.";
 
-            // Category tag style
             let catText = "Contenido";
             let catClass = "bg-slate-700 text-slate-200 border-slate-600";
             if (node.category === "AFIN") { catText = "Tema Afín (Núcleo)"; catClass = "bg-amber-500/20 text-amber-300 border-amber-500/30"; }
@@ -453,7 +451,6 @@
             panelTag.innerText = catText;
             panelTag.className = `text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded border ${catClass}`;
 
-            // Connections
             panelConnections.innerHTML = "";
             const connectedEdges = rawEdges.filter(e => e.from === node.id || e.to === node.id);
             
@@ -507,6 +504,8 @@
                     label: n.label,
                     category: n.category,
                     detail: n.detail,
+                    x: n.x,
+                    y: n.y,
                     shape: 'box',
                     margin: 12,
                     color: { background: '#0f172a', border: n.color },
@@ -521,6 +520,8 @@
                     label: n.label,
                     category: n.category,
                     detail: n.detail,
+                    x: n.x,
+                    y: n.y,
                     shape: 'box',
                     margin: 12,
                     color: { background: '#0f172a', border: n.color },
