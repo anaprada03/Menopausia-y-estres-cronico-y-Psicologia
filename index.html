@@ -368,16 +368,7 @@
                 nodes: { borderWidth: 2, shadow: true },
                 edges: { width: 1.5, shadow: false },
                 physics: {
-                    enabled: true,
-                    solver: 'repulsion',
-                    repulsion: {
-                        nodeDistance: 120,
-                        centralGravity: 0.1,
-                        springLength: 150,
-                        springConstant: 0.02,
-                        damping: 0.09
-                    },
-                    stabilization: { enabled: true, iterations: 100 }
+                    enabled: false
                 },
                 interaction: {
                     hover: true,
@@ -422,6 +413,7 @@
                 connectedEdges.forEach(edge => {
                     const targetId = (edge.from === node.id) ? edge.to : edge.from;
                     const connNode = rawNodes.find(n => n.id === targetId);
+                    if (!connNode) return;
                     
                     const item = document.createElement("div");
                     item.className = "p-2 bg-slate-950/50 rounded border border-slate-800 flex justify-between items-center hover:bg-slate-800/50 cursor-pointer transition-colors";
